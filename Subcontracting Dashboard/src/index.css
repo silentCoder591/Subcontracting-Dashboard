@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#e6f0ff] text-gray-900 font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* FIORI Primary Colors */
+  .fiori-primary {
+    @apply bg-[#0070f3] text-white;
+  }
+  
+  .fiori-primary-hover {
+    @apply bg-[#0057d2] text-white;
+  }
+  
+  .fiori-primary-light {
+    @apply bg-[#e6f0ff] text-[#0070f3];
+  }
+  
+  .fiori-secondary {
+    @apply bg-[#e6f0ff] text-gray-700 border border-gray-300;
+  }
+  
+  .fiori-secondary-hover {
+    @apply bg-[#d1e7ff] text-gray-800 border-gray-400;
+  }
+
+  /* FIORI Semantic Colors */
+  .fiori-success {
+    @apply bg-[#e8f5e8] text-[#107c10];
+  }
+  
+  .fiori-warning {
+    @apply bg-[#fff4ce] text-[#d69e00];
+  }
+  
+  .fiori-error {
+    @apply bg-[#fde7e9] text-[#d13438];
+  }
+  
+  .fiori-info {
+    @apply bg-[#e6f0ff] text-[#0070f3];
+  }
+
+  /* FIORI Cards */
+  .fiori-card {
+    @apply bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-200;
+  }
+  
+  .fiori-card-header {
+    @apply px-6 py-4 border-b border-gray-200 bg-gray-50;
+  }
+  
+  .fiori-card-content {
+    @apply p-6;
+  }
+
+  /* FIORI Buttons */
+  .fiori-button-primary {
+    @apply px-4 py-2 bg-[#0070f3] text-white rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-[#0070f3] focus:ring-offset-2 transition-colors font-medium text-sm;
+  }
+  
+  .fiori-button-secondary {
+    @apply px-4 py-2 bg-white text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors border border-gray-300 font-medium text-sm;
+  }
+  
+  .fiori-button-success {
+    @apply px-4 py-2 bg-[#107c10] text-white rounded-md hover:bg-[#0e6e0e] focus:outline-none focus:ring-2 focus:ring-[#107c10] focus:ring-offset-2 transition-colors font-medium text-sm;
+  }
+
+  /* FIORI Inputs */
+  .fiori-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0070f3] focus:border-transparent transition-colors bg-white;
+  }
+  
+  .fiori-input:focus {
+    @apply border-[#0070f3] shadow-[0_0_0_3px_rgba(0,112,243,0.1)];
+  }
+
+  /* FIORI Tables */
+  .fiori-table {
+    @apply min-w-full divide-y divide-gray-200;
+  }
+  
+  .fiori-table-header {
+    @apply bg-gray-50;
+  }
+  
+  .fiori-table-header-cell {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+  }
+  
+  .fiori-table-cell {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
+  }
+
+  /* FIORI Status Badges */
+  .fiori-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .fiori-badge-success {
+    @apply bg-[#e8f5e8] text-[#107c10];
+  }
+  
+  .fiori-badge-warning {
+    @apply bg-[#fff4ce] text-[#d69e00];
+  }
+  
+  .fiori-badge-error {
+    @apply bg-[#fde7e9] text-[#d13438];
+  }
+  
+  .fiori-badge-info {
+    @apply bg-[#e6f0ff] text-[#0070f3];
+  }
+
+  /* FIORI Navigation */
+  .fiori-nav-tab {
+    @apply py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200;
+  }
+  
+  .fiori-nav-tab-active {
+    @apply border-[#0070f3] text-[#0070f3];
+  }
+  
+  .fiori-nav-tab-inactive {
+    @apply border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300;
+  }
+
+  /* FIORI Filter Section */
+  .fiori-filter-section {
+    @apply bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-200;
+  }
+  
+  .fiori-filter-header {
+    @apply px-4 py-3 border-b border-gray-200 bg-gray-50;
+  }
+  
+  .fiori-filter-content {
+    @apply p-4;
+  }
+
+  /* FIORI Activity Card */
+  .fiori-activity-card {
+    @apply bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-shadow;
+  }
+
+  /* FIORI Header */
+  .fiori-header {
+    @apply bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] border-b border-gray-200;
+  }
+  
+  .fiori-header-content {
+    @apply px-6 py-4;
+  }
+
+  /* FIORI Summary Cards */
+  .fiori-summary-card {
+    @apply bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-200 p-6 text-center;
+  }
+  
+  .fiori-summary-number {
+    @apply text-3xl font-bold text-[#0070f3] mb-2;
+  }
+  
+  .fiori-summary-label {
+    @apply text-sm text-gray-600;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+} 
