@@ -11,17 +11,19 @@ import {
   Filter,
   Calendar,
   Building,
-  MessageSquare
+  MessageSquare,
+  Home,
+  Factory,
+  MapPin
 } from 'lucide-react'
 
 const Layout = ({ children }) => {
   const location = useLocation()
   const [filters, setFilters] = useState({
+    plant: '',
     supplier: '',
-    material: '',
-    dateFrom: '',
-    dateTo: '',
-    status: 'all'
+    storageLocation: '',
+    sku: ''
   })
 
   const handleFilterChange = (field, value) => {
@@ -32,7 +34,7 @@ const Layout = ({ children }) => {
   }
 
   const navigation = [
-    { name: 'Overview', href: '/', icon: FileText },
+    { name: 'Home', href: '/', icon: Home },
     { name: 'Purchase Orders', href: '/purchase-order', icon: FileText },
     { name: 'Post Goods Issue', href: '/stock-movement', icon: Move },
     { name: 'Post Goods Receipt', href: '/goods-receipt', icon: Package },
@@ -79,7 +81,22 @@ const Layout = ({ children }) => {
       {/* Global Filter Section - Above Navigation Tabs */}
       <div className="fiori-filter-section mx-6 mt-6">
         <div className="fiori-filter-header py-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Plant Filter */}
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[70px]">Plant:</label>
+              <div className="flex-1 relative">
+                <Factory className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Enter plant code"
+                  value={filters.plant}
+                  onChange={(e) => handleFilterChange('plant', e.target.value)}
+                  className="fiori-input pl-8 py-1.5 text-sm"
+                />
+              </div>
+            </div>
+
             {/* Supplier Filter */}
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700 min-w-[70px]">Supplier:</label>
@@ -95,65 +112,33 @@ const Layout = ({ children }) => {
               </div>
             </div>
 
-            {/* Material Filter */}
+            {/* Storage Location Filter */}
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700 min-w-[70px]">Material:</label>
+              <label className="text-sm font-medium text-gray-700 min-w-[70px]">Storage Location:</label>
+              <div className="flex-1 relative">
+                <MapPin className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Enter storage location"
+                  value={filters.storageLocation}
+                  onChange={(e) => handleFilterChange('storageLocation', e.target.value)}
+                  className="fiori-input pl-8 py-1.5 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* SKU Filter */}
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700 min-w-[70px]">SKU:</label>
               <div className="flex-1 relative">
                 <Package className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Enter material ID"
-                  value={filters.material}
-                  onChange={(e) => handleFilterChange('material', e.target.value)}
+                  placeholder="Enter SKU"
+                  value={filters.sku}
+                  onChange={(e) => handleFilterChange('sku', e.target.value)}
                   className="fiori-input pl-8 py-1.5 text-sm"
                 />
-              </div>
-            </div>
-
-            {/* Date From Filter */}
-            <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700 min-w-[70px]">Date From:</label>
-              <div className="flex-1 relative">
-                <Calendar className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="date"
-                  value={filters.dateFrom}
-                  onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                  className="fiori-input pl-8 py-1.5 text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Date To Filter */}
-            <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700 min-w-[70px]">Date To:</label>
-              <div className="flex-1 relative">
-                <Calendar className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="date"
-                  value={filters.dateTo}
-                  onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-                  className="fiori-input pl-8 py-1.5 text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Status Filter */}
-            <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700 min-w-[70px]">Status:</label>
-              <div className="flex-1 relative">
-                <select
-                  value={filters.status}
-                  onChange={(e) => handleFilterChange('status', e.target.value)}
-                  className="fiori-input py-1.5 text-sm"
-                >
-                  <option value="all">All Statuses</option>
-                  <option value="active">Active</option>
-                  <option value="pending">Pending</option>
-                  <option value="completed">Completed</option>
-                  <option value="draft">Draft</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
               </div>
             </div>
           </div>
@@ -165,7 +150,7 @@ const Layout = ({ children }) => {
                 Apply Filters
               </button>
               <button 
-                onClick={() => setFilters({ supplier: '', material: '', dateFrom: '', dateTo: '', status: 'all' })}
+                onClick={() => setFilters({ plant: '', supplier: '', storageLocation: '', sku: '' })}
                 className="fiori-button-secondary py-1.5 px-3 text-sm"
               >
                 Clear Filters

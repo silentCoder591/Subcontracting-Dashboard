@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
+import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import PurchaseOrder from './pages/PurchaseOrder'
 import GoodsReceipt from './pages/GoodsReceipt'
@@ -14,7 +15,7 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Home />} />
           <Route path="/purchase-order" element={<PurchaseOrder />} />
           <Route path="/goods-receipt" element={<GoodsReceipt />} />
           <Route path="/stock-movement" element={<StockMovement />} />
