@@ -461,10 +461,10 @@ const Home = () => {
         
         {!collapsedSections.stockOverview && (
           <div className="fiori-card-content">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-96 overflow-y-auto">
               <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50">
+                <thead className="sticky top-0 bg-gray-50 z-10">
+                  <tr className="border-b border-gray-200">
                     <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Material</th>
                     <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Description</th>
                     <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">Unrestricted Stock</th>
@@ -519,10 +519,10 @@ const Home = () => {
         
         {!collapsedSections.openPurchaseOrders && (
           <div className="fiori-card-content">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-96 overflow-y-auto">
               <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50">
+                <thead className="sticky top-0 bg-gray-50 z-10">
+                  <tr className="border-b border-gray-200">
                     <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Purchase Order</th>
                     <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Line Item</th>
                     <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Material</th>
@@ -705,10 +705,10 @@ const Home = () => {
 
       {/* Goods Issue Modal */}
       {showGoodsIssueModal && selectedComponent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl border-4 border-blue-500">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-blue-50">
               <h3 className="text-lg font-semibold text-gray-900">Post Goods Issue</h3>
               <button
                 onClick={closeModal}
@@ -719,131 +719,136 @@ const Home = () => {
             </div>
 
             {/* Modal Content */}
-            <form onSubmit={handleGoodsIssueSubmit} className="p-6 space-y-4">
-              {/* Material (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Material
-                </label>
-                <input
-                  type="text"
-                  value={selectedComponent.material}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+            <div className="p-4">
+              <form onSubmit={handleGoodsIssueSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Material (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Material
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedComponent.material}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Description (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  value={selectedComponent.description}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+                  {/* Description (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedComponent.description}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Supplier (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Supplier
-                </label>
-                <input
-                  type="text"
-                  value={selectedComponent.supplier}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+                  {/* Supplier (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Supplier
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedComponent.supplier}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Available Stock (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Available Stock
-                </label>
-                <input
-                  type="text"
-                  value={`${selectedComponent.unrestrictedStock} ${selectedComponent.uom}`}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+                  {/* Available Stock (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Available Stock
+                    </label>
+                    <input
+                      type="text"
+                      value={`${selectedComponent.unrestrictedStock} ${selectedComponent.uom}`}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Quantity to Issue */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Quantity to Issue *
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max={selectedComponent.unrestrictedStock}
-                  value={goodsIssueForm.quantity}
-                  onChange={(e) => setGoodsIssueForm(prev => ({ ...prev, quantity: e.target.value }))}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                  placeholder={`Enter quantity (max: ${selectedComponent.unrestrictedStock})`}
-                />
-              </div>
+                  {/* Quantity to Issue */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quantity to Issue *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max={selectedComponent.unrestrictedStock}
+                      value={goodsIssueForm.quantity}
+                      onChange={(e) => setGoodsIssueForm(prev => ({ ...prev, quantity: e.target.value }))}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                      placeholder={`Enter quantity (max: ${selectedComponent.unrestrictedStock})`}
+                    />
+                  </div>
 
-              {/* Issue Date */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Issue Date
-                </label>
-                <input
-                  type="date"
-                  value={goodsIssueForm.issueDate}
-                  onChange={(e) => setGoodsIssueForm(prev => ({ ...prev, issueDate: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                />
-              </div>
+                  {/* Issue Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Issue Date
+                    </label>
+                    <input
+                      type="date"
+                      value={goodsIssueForm.issueDate}
+                      onChange={(e) => setGoodsIssueForm(prev => ({ ...prev, issueDate: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    />
+                  </div>
+                </div>
 
-              {/* Notes */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notes
-                </label>
-                <textarea
-                  rows={3}
-                  value={goodsIssueForm.notes}
-                  onChange={(e) => setGoodsIssueForm(prev => ({ ...prev, notes: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                  placeholder="Enter any notes about this goods issue..."
-                />
-              </div>
+                {/* Notes - Full Width */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={goodsIssueForm.notes}
+                    onChange={(e) => setGoodsIssueForm(prev => ({ ...prev, notes: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    placeholder="Enter any notes about this goods issue..."
+                  />
+                </div>
+              </form>
+            </div>
 
-              {/* Modal Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!goodsIssueForm.quantity}
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#0070f3] border border-transparent rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Post Goods Issue
-                </button>
-              </div>
-            </form>
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end space-x-3 p-4 border-t border-gray-200 bg-gray-50">
+              <button
+                type="button"
+                onClick={closeModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3]"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={!goodsIssueForm.quantity}
+                onClick={handleGoodsIssueSubmit}
+                className="px-4 py-2 text-sm font-medium text-white bg-[#0070f3] border border-transparent rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Post Goods Issue
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Post Goods Receipt Modal */}
       {showPostGRModal && selectedPOItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl border-4 border-green-500">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-green-50">
               <h3 className="text-lg font-semibold text-gray-900">Post Goods Receipt</h3>
               <button
                 onClick={closePostGRModal}
@@ -854,117 +859,122 @@ const Home = () => {
             </div>
 
             {/* Modal Content */}
-            <form onSubmit={handlePostGRSubmit} className="p-6 space-y-4">
-              {/* Material (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Material
-                </label>
-                <input
-                  type="text"
-                  value={selectedPOItem.material}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+            <div className="p-4">
+              <form onSubmit={handlePostGRSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Material (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Material
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.material}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Description (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  value={selectedPOItem.description}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+                  {/* Description (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.description}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Supplier (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Supplier
-                </label>
-                <input
-                  type="text"
-                  value={selectedPOItem.supplier}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+                  {/* Supplier (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Supplier
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.supplier}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Quantity to Receive */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Quantity to Receive *
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={postGRForm.quantity}
-                  onChange={(e) => setPostGRForm(prev => ({ ...prev, quantity: e.target.value }))}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                  placeholder="Enter quantity to receive"
-                />
-              </div>
+                  {/* Quantity to Receive */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quantity to Receive *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={postGRForm.quantity}
+                      onChange={(e) => setPostGRForm(prev => ({ ...prev, quantity: e.target.value }))}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                      placeholder="Enter quantity to receive"
+                    />
+                  </div>
 
-              {/* Receipt Date */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Receipt Date
-                </label>
-                <input
-                  type="date"
-                  value={postGRForm.receiptDate}
-                  onChange={(e) => setPostGRForm(prev => ({ ...prev, receiptDate: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                />
-              </div>
+                  {/* Receipt Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Receipt Date
+                    </label>
+                    <input
+                      type="date"
+                      value={postGRForm.receiptDate}
+                      onChange={(e) => setPostGRForm(prev => ({ ...prev, receiptDate: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    />
+                  </div>
+                </div>
 
-              {/* Notes */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notes
-                </label>
-                <textarea
-                  rows={3}
-                  value={postGRForm.notes}
-                  onChange={(e) => setPostGRForm(prev => ({ ...prev, notes: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                  placeholder="Enter any notes about this goods receipt..."
-                />
-              </div>
+                {/* Notes - Full Width */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={postGRForm.notes}
+                    onChange={(e) => setPostGRForm(prev => ({ ...prev, notes: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    placeholder="Enter any notes about this goods receipt..."
+                  />
+                </div>
+              </form>
+            </div>
 
-              {/* Modal Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={closePostGRModal}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!postGRForm.quantity}
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#0070f3] border border-transparent rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Post Goods Receipt
-                </button>
-              </div>
-            </form>
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end space-x-3 p-4 border-t border-gray-200 bg-gray-50">
+              <button
+                type="button"
+                onClick={closePostGRModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3]"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={!postGRForm.quantity}
+                onClick={handlePostGRSubmit}
+                className="px-4 py-2 text-sm font-medium text-white bg-[#0070f3] border border-transparent rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Post Goods Receipt
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Component Consumption Modal */}
       {showComponentConsumptionModal && selectedPOItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl border-4 border-purple-500">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-purple-50">
               <h3 className="text-lg font-semibold text-gray-900">Book Component Consumption</h3>
               <button
                 onClick={closeComponentConsumptionModal}
@@ -975,107 +985,112 @@ const Home = () => {
             </div>
 
             {/* Modal Content */}
-            <form onSubmit={handleComponentConsumptionSubmit} className="p-6 space-y-4">
-              {/* Material (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Material
-                </label>
-                <input
-                  type="text"
-                  value={selectedPOItem.material}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+            <div className="p-4">
+              <form onSubmit={handleComponentConsumptionSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Material (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Material
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.material}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Description (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  value={selectedPOItem.description}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+                  {/* Description (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.description}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Supplier (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Supplier
-                </label>
-                <input
-                  type="text"
-                  value={selectedPOItem.supplier}
-                  disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                />
-              </div>
+                  {/* Supplier (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Supplier
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.supplier}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
 
-              {/* Quantity to Consume */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Quantity to Consume *
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={consumptionForm.quantity}
-                  onChange={(e) => setConsumptionForm(prev => ({ ...prev, quantity: e.target.value }))}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                  placeholder="Enter quantity to consume"
-                />
-              </div>
+                  {/* Quantity to Consume */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quantity to Consume *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={consumptionForm.quantity}
+                      onChange={(e) => setConsumptionForm(prev => ({ ...prev, quantity: e.target.value }))}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                      placeholder="Enter quantity to consume"
+                    />
+                  </div>
 
-              {/* Consumption Date */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Consumption Date
-                </label>
-                <input
-                  type="date"
-                  value={consumptionForm.consumptionDate}
-                  onChange={(e) => setConsumptionForm(prev => ({ ...prev, consumptionDate: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                />
-              </div>
+                  {/* Consumption Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Consumption Date
+                    </label>
+                    <input
+                      type="date"
+                      value={consumptionForm.consumptionDate}
+                      onChange={(e) => setConsumptionForm(prev => ({ ...prev, consumptionDate: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    />
+                  </div>
+                </div>
 
-              {/* Notes */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notes
-                </label>
-                <textarea
-                  rows={3}
-                  value={consumptionForm.notes}
-                  onChange={(e) => setConsumptionForm(prev => ({ ...prev, notes: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
-                  placeholder="Enter any notes about this component consumption..."
-                />
-              </div>
+                {/* Notes - Full Width */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={consumptionForm.notes}
+                    onChange={(e) => setConsumptionForm(prev => ({ ...prev, notes: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    placeholder="Enter any notes about this component consumption..."
+                  />
+                </div>
+              </form>
+            </div>
 
-              {/* Modal Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={closeComponentConsumptionModal}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!consumptionForm.quantity}
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#0070f3] border border-transparent rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Book Component Consumption
-                </button>
-              </div>
-            </form>
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end space-x-3 p-4 border-t border-gray-200 bg-gray-50">
+              <button
+                type="button"
+                onClick={closeComponentConsumptionModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3]"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={!consumptionForm.quantity}
+                onClick={handleComponentConsumptionSubmit}
+                className="px-4 py-2 text-sm font-medium text-white bg-[#0070f3] border border-transparent rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Book Component Consumption
+              </button>
+            </div>
           </div>
         </div>
       )}

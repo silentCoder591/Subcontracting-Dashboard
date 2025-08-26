@@ -7,6 +7,31 @@
     @apply bg-[#e6f0ff] text-gray-900 font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  /* Custom scrollbar styles for modal content */
+  .modal-scroll-content::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .modal-scroll-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  .modal-scroll-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  .modal-scroll-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* For Firefox */
+  .modal-scroll-content {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
 }
 
 @layer components {
