@@ -9,8 +9,8 @@ const Home = () => {
       material: 'Assembly A',
       description: 'Main Assembly Component',
       unrestrictedStock: 50,
-      uom: 'PCS',
-      stockIssuedToSubcontractor: 20,
+      uom: '',
+      stockIssuedToSubcontractor: "-",
       isParent: true,
       supplier: 'ABC Manufacturing',
       children: [
@@ -43,8 +43,8 @@ const Home = () => {
       material: 'Assembly B',
       description: 'Secondary Assembly Component',
       unrestrictedStock: 30,
-      uom: 'PCS',
-      stockIssuedToSubcontractor: 15,
+      uom: '',
+      stockIssuedToSubcontractor: "-",
       isParent: true,
       supplier: 'XYZ Industries',
       children: [
@@ -384,8 +384,8 @@ const Home = () => {
     const indentClass = isChild ? 'pl-8' : 'pl-4'
 
     return (
-      <tr key={item.id} className={`${rowClass} hover:bg-gray-100 transition-colors`}>
-        <td className={`py-3 ${indentClass}`}>
+      <tr key={item.id} className={`${rowClass} hover:bg-blue-50 transition-colors border-b border-gray-200`}>
+        <td className={`py-3 ${indentClass} border-r border-gray-200`}>
           <div className="flex items-center space-x-2">
             {isChild && <ArrowRight className="w-4 h-4 text-[#0070f3]" />}
             <span className={isChild ? 'text-sm' : 'font-semibold'}>
@@ -393,12 +393,12 @@ const Home = () => {
             </span>
           </div>
         </td>
-        <td className="py-3 px-4">
+        <td className="py-3 px-4 border-r border-gray-200">
           <span className={isChild ? 'text-sm text-gray-600' : 'text-gray-900'}>
             {item.description}
           </span>
         </td>
-        <td className="py-3 px-4 text-center">
+        <td className="py-3 px-4 text-center border-r border-gray-200">
           <div 
             className={`inline-block px-3 py-1 rounded-lg ${
               isChild 
@@ -413,10 +413,10 @@ const Home = () => {
             {item.unrestrictedStock} {item.uom}
           </div>
         </td>
-        <td className="py-3 px-4 text-center">
+        <td className="py-3 px-4 text-center border-r border-gray-200">
           <span className="text-sm text-gray-600">{item.uom}</span>
         </td>
-        <td className="py-3 px-4 text-center">
+        <td className="py-3 px-4 text-center border-r border-gray-200">
           <div 
             className={`inline-block px-3 py-1 rounded-lg ${
               isChild 
@@ -462,15 +462,23 @@ const Home = () => {
         {!collapsedSections.stockOverview && (
           <div className="fiori-card-content">
             <div className="overflow-x-auto max-h-96 overflow-y-auto">
-              <table className="w-full">
-                <thead className="sticky top-0 bg-gray-50 z-10">
-                  <tr className="border-b border-gray-200">
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Material</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Description</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">Unrestricted Stock</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">UoM</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">Stock Issued to Subcontractor</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">UoM</th>
+              <table className="w-full border-collapse">
+                <colgroup>
+                  <col className="w-32" /> {/* Material */}
+                  <col className="w-48" /> {/* Description */}
+                  <col className="w-32" /> {/* Unrestricted Stock */}
+                  <col className="w-16" /> {/* UoM */}
+                  <col className="w-40" /> {/* Stock Issued to Subcontractor */}
+                  <col className="w-16" /> {/* UoM */}
+                </colgroup>
+                <thead className="sticky top-0 bg-gray-100 z-10">
+                  <tr className="border-b-2 border-gray-400 border-t-2 border-gray-400">
+                    <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Material</th>
+                    <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Description</th>
+                    <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Unrestricted Stock</th>
+                    <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">UoM</th>
+                    <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Stock Issued to Subcontractor</th>
+                    <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 bg-gray-200">UoM</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -489,17 +497,9 @@ const Home = () => {
 
       {/* Open Purchase Orders Section */}
       <div className="fiori-card">
-        <div 
-          className="fiori-card-header cursor-pointer hover:bg-gray-100 transition-colors"
-          onClick={() => toggleSection('openPurchaseOrders')}
-        >
+        <div className="fiori-card-header">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              {collapsedSections.openPurchaseOrders ? (
-                <ChevronRight className="w-5 h-5 text-gray-600" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-600" />
-              )}
               <h3 className="text-lg font-semibold text-gray-900">Open Purchase Orders</h3>
             </div>
             <div className="flex items-center space-x-3">
@@ -510,197 +510,136 @@ const Home = () => {
                 <Plus className="w-4 h-4" />
                 <span>Create PO</span>
               </button>
-              <div className="text-sm text-gray-500">
-                {collapsedSections.openPurchaseOrders ? 'Click to expand' : 'Click to collapse'}
-              </div>
+              <button
+                onClick={() => setShowPostGRModal(true)}
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 transition-colors"
+              >
+                <PackageCheck className="w-4 h-4" />
+                <span>Post Goods Receipt</span>
+              </button>
             </div>
           </div>
         </div>
         
-        {!collapsedSections.openPurchaseOrders && (
-          <div className="fiori-card-content">
-            <div className="overflow-x-auto max-h-96 overflow-y-auto">
-              <table className="w-full">
-                <thead className="sticky top-0 bg-gray-50 z-10">
-                  <tr className="border-b border-gray-200">
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Purchase Order</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Line Item</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Material</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Description</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Plant</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Storage Location</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">PO Quantity</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">UoM</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-700">Delivery Date</th>
-                    <th className="py-3 px-4 text-right text-sm font-medium text-gray-700">Net Price</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">Currency</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">Delivered Qty</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">UoM</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">Open Qty</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">UoM</th>
-                    <th className="py-3 px-4 text-center text-sm font-medium text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(getGroupedPOs()).map(([poNumber, poItems]) => (
-                    <React.Fragment key={poNumber}>
-                      {/* PO Header Row - Parent */}
-                      <tr className="bg-white font-medium hover:bg-gray-100 transition-colors">
-                        <td className="py-3 pl-4">
-                          <div className="flex items-center space-x-3">
-                            <button
-                              onClick={() => togglePO(poNumber)}
-                              className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
-                              title={collapsedPOs[poNumber] ? 'Expand PO Items' : 'Collapse PO Items'}
-                            >
-                              {collapsedPOs[poNumber] ? (
-                                <ChevronRight className="w-4 h-4" />
-                              ) : (
-                                <ChevronDown className="w-4 h-4" />
-                              )}
-                            </button>
-                            <span className="font-semibold text-gray-900">{poNumber}</span>
-                            <span className="text-xs text-gray-500">
-                              ({poItems.length} item{poItems.length > 1 ? 's' : ''})
-                            </span>
-                          </div>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="text-gray-600">-</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="text-gray-900">PO Header</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="text-gray-600">Purchase Order {poNumber}</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="text-gray-600">-</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="text-gray-600">-</span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="text-gray-900">-</span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="text-gray-500">-</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="text-gray-600">-</span>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <span className="text-gray-900">-</span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="text-gray-500">-</span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="text-gray-900">-</span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="text-gray-500">-</span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="text-gray-900">-</span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="text-gray-500">-</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="text-gray-600">-</span>
-                        </td>
-                      </tr>
-                      
-                      {/* PO Line Items - Children */}
-                      {!collapsedPOs[poNumber] && poItems.map((poItem, index) => (
-                        <tr key={`${poItem.poNumber}-${poItem.lineItem}-${index}`} className="bg-gray-50 border-l-4 border-[#0070f3] hover:bg-gray-100 transition-colors">
-                          <td className="py-3 pl-8">
-                            <div className="flex items-center space-x-2">
-                              <ArrowRight className="w-4 h-4 text-[#0070f3]" />
-                              <span className="text-sm font-medium text-[#0070f3]">{poItem.poNumber}</span>
-                            </div>
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="text-sm text-gray-600">{poItem.lineItem}</span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="text-sm font-medium text-gray-900">{poItem.material}</span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="text-sm text-gray-600">{poItem.description}</span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="text-sm text-gray-600">{poItem.plant}</span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="text-sm text-gray-600">{poItem.storageLocation}</span>
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            <span className="text-sm text-gray-900">{poItem.poQuantity}</span>
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            <span className="text-xs text-gray-500">{poItem.uom}</span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="text-sm text-gray-600">{poItem.deliveryDate}</span>
-                          </td>
-                          <td className="py-3 px-4 text-right">
-                            <span className="text-sm text-gray-900">{poItem.netPrice.toFixed(2)}</span>
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            <span className="text-xs text-gray-500">{poItem.currency}</span>
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            <span className="text-sm text-gray-900">{poItem.deliveredQuantity}</span>
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            <span className="text-xs text-gray-500">{poItem.uom}</span>
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            <span className={`text-sm font-medium ${
-                              poItem.openQuantity > 0 ? 'text-orange-600' : 'text-green-600'
-                            }`}>
-                              {poItem.openQuantity}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 text-center">
-                            <span className="text-xs text-gray-500">{poItem.uom}</span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center space-x-2">
-                              <button
-                                onClick={() => handleBookComponentConsumption(poItem)}
-                                className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
-                                title="Book Component Consumption"
-                              >
-                                <Package className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handlePostGR(poItem)}
-                                className="p-1 text-green-600 hover:text-green-800 hover:bg-green-50 rounded transition-colors"
-                                title="Post Goods Receipt"
-                              >
-                                <PackageCheck className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleClosePOItem(poItem)}
-                                className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors"
-                                title="Close PO Item"
-                              >
-                                <CheckCircle className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        <div className="fiori-card-content">
+          <div className="overflow-x-auto max-h-96 overflow-y-auto">
+            <table className="w-full border-collapse">
+              <colgroup>
+                <col className="w-32" /> {/* Purchase Order */}
+                <col className="w-20" /> {/* Line Item */}
+                <col className="w-28" /> {/* Material */}
+                <col className="w-48" /> {/* Description */}
+                <col className="w-24" /> {/* Plant */}
+                <col className="w-28" /> {/* Storage Location */}
+                <col className="w-24" /> {/* PO Quantity */}
+                <col className="w-16" /> {/* UoM */}
+                <col className="w-28" /> {/* Delivery Date */}
+                <col className="w-24" /> {/* Net Price */}
+                <col className="w-20" /> {/* Currency */}
+                <col className="w-24" /> {/* Delivered Qty */}
+                <col className="w-16" /> {/* UoM */}
+                <col className="w-24" /> {/* Open Qty */}
+                <col className="w-16" /> {/* UoM */}
+                <col className="w-24" /> {/* Actions */}
+              </colgroup>
+              <thead className="sticky top-0 bg-gray-100 z-10">
+                <tr className="border-b-2 border-gray-400 border-t-2 border-gray-400">
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Purchase Order</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Line Item</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Material</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Description</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Plant</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Storage Location</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">PO Quantity</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">UoM</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Delivery Date</th>
+                  <th className="py-3 px-4 text-right text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Net Price</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Currency</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Delivered Qty</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">UoM</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Open Qty</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">UoM</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 bg-gray-200">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(getGroupedPOs()).flatMap(([poNumber, poItems]) => 
+                  poItems.map((poItem, index) => (
+                    <tr key={`${poItem.poNumber}-${poItem.lineItem}-${index}`} className="bg-white hover:bg-blue-50 transition-colors border-b border-gray-200">
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm font-medium text-gray-900">{poItem.poNumber}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.lineItem}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm font-medium text-gray-900">{poItem.material}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.description}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.plant}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.storageLocation}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-sm text-gray-900">{poItem.poQuantity}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.deliveryDate}</span>
+                      </td>
+                      <td className="py-3 px-4 text-right border-r border-gray-200">
+                        <span className="text-sm text-gray-900">{poItem.netPrice.toFixed(2)}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.currency}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-sm text-gray-900">{poItem.deliveredQuantity}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className={`text-sm font-medium ${
+                          poItem.openQuantity > 0 ? 'text-orange-600' : 'text-green-600'
+                        }`}>
+                          {poItem.openQuantity}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleBookComponentConsumption(poItem)}
+                            className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                            title="Book Component Consumption"
+                          >
+                            <Package className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleClosePOItem(poItem)}
+                            className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors"
+                            title="Close PO Item"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Goods Issue Modal */}
