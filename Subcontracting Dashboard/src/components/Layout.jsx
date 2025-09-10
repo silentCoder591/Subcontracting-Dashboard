@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { 
   FileText,
   Package,
-  Move,
   Bell,
   User,
   Search,
@@ -32,8 +31,6 @@ const Layout = ({ children }) => {
   const navigation = [
     { name: 'Stock Overview', href: '/', icon: Home },
     { name: 'Open Purchase Orders', href: '/purchase-order', icon: FileText },
-    { name: 'Post Goods Issue', href: '/stock-movement', icon: Move },
-    { name: 'Post Goods Receipt', href: '/goods-receipt', icon: Package },
     { name: 'Notifications', href: '/notifications', icon: Bell }
   ]
 
@@ -105,7 +102,6 @@ const Layout = ({ children }) => {
                 />
               </div>
             </div>
-
 
             {/* SKU Filter */}
             <div className="flex items-center space-x-2">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Package, Move, Building, Factory, MapPin, ArrowRight, X } from 'lucide-react'
+import { Package, Building, Factory, MapPin, ArrowRight, X, Eye, EyeOff } from 'lucide-react'
 
 const Home = () => {
   // Mock data for stock overview with parent-child relationships
@@ -47,6 +47,30 @@ const Home = () => {
           unrestrictedStock: 75,
           uom: 'PCS',
           stockIssuedToSubcontractor: 30,
+          isParent: false,
+          parentId: 'MAT-001',
+          supplier: 'ABC Manufacturing'
+        },
+        {
+          id: 'COMP-001-3',
+          material: 'Component A-1',
+          description: 'Sub-component A-1',
+          storageLocation: '2004',
+          unrestrictedStock: 0,
+          uom: 'PCS',
+          stockIssuedToSubcontractor: 0,
+          isParent: false,
+          parentId: 'MAT-001',
+          supplier: 'ABC Manufacturing'
+        },
+        {
+          id: 'COMP-002-2',
+          material: 'Component A-2',
+          description: 'Sub-component A-2',
+          storageLocation: '2004',
+          unrestrictedStock: 0,
+          uom: 'PCS',
+          stockIssuedToSubcontractor: 0,
           isParent: false,
           parentId: 'MAT-001',
           supplier: 'ABC Manufacturing'
@@ -99,6 +123,30 @@ const Home = () => {
           isParent: false,
           parentId: 'MAT-002',
           supplier: 'XYZ Industries'
+        },
+        {
+          id: 'COMP-003-3',
+          material: 'Component B-1',
+          description: 'Sub-component B-1',
+          storageLocation: '2004',
+          unrestrictedStock: 0,
+          uom: 'PCS',
+          stockIssuedToSubcontractor: 0,
+          isParent: false,
+          parentId: 'MAT-002',
+          supplier: 'XYZ Industries'
+        },
+        {
+          id: 'COMP-004-2',
+          material: 'Component B-2',
+          description: 'Sub-component B-2',
+          storageLocation: '2004',
+          unrestrictedStock: 0,
+          uom: 'PCS',
+          stockIssuedToSubcontractor: 0,
+          isParent: false,
+          parentId: 'MAT-002',
+          supplier: 'XYZ Industries'
         }
       ]
     }
@@ -106,6 +154,7 @@ const Home = () => {
 
 
   const [stockItems, setStockItems] = useState(stockData)
+  const [showZeroStock, setShowZeroStock] = useState(false)
   const [draggedItem, setDraggedItem] = useState(null)
   const [showGoodsIssueModal, setShowGoodsIssueModal] = useState(false)
   const [selectedComponent, setSelectedComponent] = useState(null)
@@ -194,7 +243,9 @@ const Home = () => {
 
   // Helper function to get merged stock data for a component
   const getMergedStockData = (componentMaterial, parentId) => {
-    const parent = stockItems.find(item => item.id === parentId)
+    // Use filtered data to ensure we only merge visible items
+    const filteredItems = getFilteredStockItems()
+    const parent = filteredItems.find(item => item.id === parentId)
     if (!parent) return { totalIssued: 0, uom: '' }
     
     const components = parent.children.filter(child => child.material === componentMaterial)
@@ -212,7 +263,8 @@ const Home = () => {
 
   // Helper function to check if this is the first occurrence of a component material
   const isFirstOccurrence = (item, allItems) => {
-    const parent = stockItems.find(parent => parent.id === item.parentId)
+    const filteredItems = getFilteredStockItems()
+    const parent = filteredItems.find(parent => parent.id === item.parentId)
     if (!parent) return true
     
     const sameMaterialItems = parent.children.filter(child => child.material === item.material)
@@ -221,11 +273,24 @@ const Home = () => {
 
   // Helper function to get the count of same material items for rowspan
   const getSameMaterialCount = (item) => {
-    const parent = stockItems.find(parent => parent.id === item.parentId)
+    const filteredItems = getFilteredStockItems()
+    const parent = filteredItems.find(parent => parent.id === item.parentId)
     if (!parent) return 1
     
     const sameMaterialItems = parent.children.filter(child => child.material === item.material)
-    return sameMaterialItems.length
+    return Math.max(1, sameMaterialItems.length)
+  }
+
+  // Filter stock items based on zero stock toggle
+  const getFilteredStockItems = () => {
+    if (showZeroStock) {
+      return stockItems
+    }
+    
+    return stockItems.map(assembly => ({
+      ...assembly,
+      children: assembly.children.filter(child => child.unrestrictedStock > 0)
+    })).filter(assembly => assembly.children.length > 0)
   }
 
   const renderStockRow = (item, isChild = false) => {
@@ -278,11 +343,8 @@ const Home = () => {
         <td className="py-1 px-2 text-center border-r border-gray-200">
           <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
         </td>
-        {isChild && isFirstOccurrenceOfComponent ? (
-          <td 
-            className="py-1 px-2 text-center border-r border-gray-200 align-middle"
-            rowSpan={getSameMaterialCount(item)}
-          >
+        <td className="py-1 px-2 text-center border-r border-gray-200">
+          {isChild && isFirstOccurrenceOfComponent ? (
             <div 
               className="inline-block px-2 py-0.5 rounded text-xs bg-green-100 text-green-800 font-medium"
               onDragOver={handleDragOver}
@@ -291,9 +353,9 @@ const Home = () => {
             >
               {mergedData.totalIssued} {mergedData.uom}
             </div>
-          </td>
-        ) : !isChild ? (
-          <td className="py-1 px-2 text-center border-r border-gray-200">
+          ) : isChild ? (
+            <div className="text-xs text-gray-300">↳</div>
+          ) : (
             <div 
               className="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-800"
               onDragOver={handleDragOver}
@@ -302,20 +364,11 @@ const Home = () => {
             >
               {item.stockIssuedToSubcontractor} {item.uom}
             </div>
-          </td>
-        ) : null}
-        {isChild && isFirstOccurrenceOfComponent ? (
-          <td 
-            className="py-1 px-2 text-center align-middle"
-            rowSpan={getSameMaterialCount(item)}
-          >
-            <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
-          </td>
-        ) : !isChild ? (
-          <td className="py-1 px-2 text-center">
-            <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
-          </td>
-        ) : null}
+          )}
+        </td>
+        <td className="py-1 px-2 text-center">
+          <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
+        </td>
       </tr>
     )
   }
@@ -328,6 +381,28 @@ const Home = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <h3 className="text-lg font-semibold text-gray-900">Stock Overview</h3>
+            </div>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => setShowZeroStock(!showZeroStock)}
+                className={`flex items-center space-x-2 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  showZeroStock 
+                    ? 'text-gray-700 bg-gray-200 hover:bg-gray-300' 
+                    : 'text-white bg-[#0070f3] hover:bg-[#0057d2]'
+                }`}
+              >
+                {showZeroStock ? (
+                  <>
+                    <EyeOff className="w-4 h-4" />
+                    <span>Hide Zero Stock</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-4 h-4" />
+                    <span>Show Zero Stock</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
@@ -356,7 +431,7 @@ const Home = () => {
                 </tr>
               </thead>
               <tbody>
-                {stockItems.map(assembly => (
+                {getFilteredStockItems().map(assembly => (
                   <React.Fragment key={assembly.id}>
                     {renderStockRow(assembly)}
                     {assembly.children.map(child => renderStockRow(child, true))}

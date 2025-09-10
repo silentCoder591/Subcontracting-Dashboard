@@ -7,81 +7,82 @@ import {
   X,
   Edit,
   Clock,
-  Search
+  Search,
+  List
 } from 'lucide-react'
 
 const PurchaseOrder = () => {
   const [searchTerm, setSearchTerm] = useState('')
   
-  // Mock data for Open Purchase Orders
+  // Mock data for Open Purchase Orders - Assembly Items Only
   const purchaseOrderData = [
     {
       poNumber: '4500000001',
       lineItem: '001',
-      material: 'COMP-001',
-      description: 'Component A-1 for Assembly',
+      material: 'MAT-001',
+      description: 'Assembly A - Main Assembly Component',
       plant: 'PLANT-A',
       storageLocation: 'SL-001',
-      poQuantity: 100,
+      poQuantity: 50,
       uom: 'PCS',
       deliveryDate: '2024-03-15',
-      netPrice: 25.50,
+      netPrice: 1250.00,
       currency: 'USD',
-      deliveredQuantity: 60,
-      invoicedQuantity: 50,
-      openQuantity: 40,
-      supplier: 'ABC Manufacturing'
-    },
-    {
-      poNumber: '4500000001',
-      lineItem: '002',
-      material: 'COMP-002',
-      description: 'Component A-2 for Assembly',
-      plant: 'PLANT-A',
-      storageLocation: 'SL-002',
-      poQuantity: 75,
-      uom: 'PCS',
-      deliveryDate: '2024-03-20',
-      netPrice: 18.75,
-      currency: 'USD',
-      deliveredQuantity: 45,
-      invoicedQuantity: 40,
-      openQuantity: 30,
+      deliveredQuantity: 30,
+      invoicedQuantity: 25,
+      openQuantity: 20,
       supplier: 'ABC Manufacturing'
     },
     {
       poNumber: '4500000002',
       lineItem: '001',
-      material: 'COMP-003',
-      description: 'Component B-1 for Secondary Assembly',
+      material: 'MAT-002',
+      description: 'Assembly B - Secondary Assembly Component',
       plant: 'PLANT-B',
-      storageLocation: 'SL-003',
-      poQuantity: 80,
+      storageLocation: 'SL-002',
+      poQuantity: 30,
       uom: 'PCS',
-      deliveryDate: '2024-03-25',
-      netPrice: 32.00,
+      deliveryDate: '2024-03-20',
+      netPrice: 980.00,
       currency: 'USD',
-      deliveredQuantity: 0,
-      invoicedQuantity: 0,
-      openQuantity: 80,
+      deliveredQuantity: 15,
+      invoicedQuantity: 10,
+      openQuantity: 15,
       supplier: 'XYZ Industries'
     },
     {
       poNumber: '4500000003',
       lineItem: '001',
-      material: 'COMP-004',
-      description: 'Component B-2 for Secondary Assembly',
-      plant: 'PLANT-B',
-      storageLocation: 'SL-004',
-      poQuantity: 120,
+      material: 'MAT-003',
+      description: 'Assembly C - Production Assembly',
+      plant: 'PLANT-A',
+      storageLocation: 'SL-003',
+      poQuantity: 25,
       uom: 'PCS',
-      deliveryDate: '2024-04-01',
-      netPrice: 28.50,
+      deliveryDate: '2024-03-25',
+      netPrice: 750.00,
       currency: 'USD',
       deliveredQuantity: 0,
       invoicedQuantity: 0,
-      openQuantity: 120,
-      supplier: 'XYZ Industries'
+      openQuantity: 25,
+      supplier: 'DEF Manufacturing'
+    },
+    {
+      poNumber: '4500000004',
+      lineItem: '001',
+      material: 'MAT-004',
+      description: 'Assembly D - Quality Control Assembly',
+      plant: 'PLANT-C',
+      storageLocation: 'SL-004',
+      poQuantity: 40,
+      uom: 'PCS',
+      deliveryDate: '2024-04-01',
+      netPrice: 1100.00,
+      currency: 'USD',
+      deliveredQuantity: 0,
+      invoicedQuantity: 0,
+      openQuantity: 40,
+      supplier: 'GHI Industries'
     }
   ]
 
@@ -133,6 +134,11 @@ const PurchaseOrder = () => {
   const handleViewHistory = (poItem) => {
     console.log('View History:', poItem)
     // TODO: Implement history view
+  }
+
+  const handleViewBOM = (poItem) => {
+    console.log('View Bill of Material:', poItem)
+    // TODO: Implement BOM view
   }
 
   const handlePostConsumption = () => {
@@ -413,6 +419,13 @@ const PurchaseOrder = () => {
                             title="Edit PO"
                           >
                             <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleViewBOM(poItem)}
+                            className="p-1 text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded transition-colors"
+                            title="View Bill of Material"
+                          >
+                            <List className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleViewHistory(poItem)}
