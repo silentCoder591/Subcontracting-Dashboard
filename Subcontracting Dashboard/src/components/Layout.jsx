@@ -4,17 +4,14 @@ import {
   FileText,
   Package,
   Move,
-  Brain,
   Bell,
   User,
   Search,
   Filter,
   Calendar,
   Building,
-  MessageSquare,
   Home,
-  Factory,
-  MapPin
+  Factory
 } from 'lucide-react'
 
 const Layout = ({ children }) => {
@@ -22,7 +19,6 @@ const Layout = ({ children }) => {
   const [filters, setFilters] = useState({
     plant: '',
     supplier: '',
-    storageLocation: '',
     sku: ''
   })
 
@@ -34,12 +30,10 @@ const Layout = ({ children }) => {
   }
 
   const navigation = [
-    { name: 'Home', href: '/', icon: Home },
-    { name: 'Purchase Orders', href: '/purchase-order', icon: FileText },
+    { name: 'Stock Overview', href: '/', icon: Home },
+    { name: 'Open Purchase Orders', href: '/purchase-order', icon: FileText },
     { name: 'Post Goods Issue', href: '/stock-movement', icon: Move },
     { name: 'Post Goods Receipt', href: '/goods-receipt', icon: Package },
-    { name: 'AI Insights', href: '/ml-insights', icon: Brain },
-    { name: 'Conversational Insights', href: '/conversational-insights', icon: MessageSquare },
     { name: 'Notifications', href: '/notifications', icon: Bell }
   ]
 
@@ -81,7 +75,7 @@ const Layout = ({ children }) => {
       {/* Global Filter Section - Above Navigation Tabs */}
       <div className="fiori-filter-section mx-6 mt-6">
         <div className="fiori-filter-header py-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Plant Filter */}
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700 min-w-[70px]">Plant:</label>
@@ -112,20 +106,6 @@ const Layout = ({ children }) => {
               </div>
             </div>
 
-            {/* Storage Location Filter */}
-            <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700 min-w-[70px]">Storage Location:</label>
-              <div className="flex-1 relative">
-                <MapPin className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Enter storage location"
-                  value={filters.storageLocation}
-                  onChange={(e) => handleFilterChange('storageLocation', e.target.value)}
-                  className="fiori-input pl-8 py-1.5 text-sm"
-                />
-              </div>
-            </div>
 
             {/* SKU Filter */}
             <div className="flex items-center space-x-2">
@@ -150,7 +130,7 @@ const Layout = ({ children }) => {
                 Apply Filters
               </button>
               <button 
-                onClick={() => setFilters({ plant: '', supplier: '', storageLocation: '', sku: '' })}
+                onClick={() => setFilters({ plant: '', supplier: '', sku: '' })}
                 className="fiori-button-secondary py-1.5 px-3 text-sm"
               >
                 Clear Filters

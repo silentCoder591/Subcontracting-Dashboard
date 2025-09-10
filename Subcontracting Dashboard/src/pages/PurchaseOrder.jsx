@@ -1,304 +1,691 @@
 import React, { useState } from 'react'
 import { 
   Plus, 
-  Search, 
-  Download, 
-  Edit, 
-  Trash2, 
-  Eye,
-  CheckCircle,
+  PackageCheck, 
+  Package, 
+  CheckCircle, 
+  X,
+  Edit,
   Clock,
-  AlertTriangle
+  Search
 } from 'lucide-react'
 
 const PurchaseOrder = () => {
-  const [showForm, setShowForm] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState('all')
-
-  // Mock data for demonstration
-  const purchaseOrders = [
+  
+  // Mock data for Open Purchase Orders
+  const purchaseOrderData = [
     {
-      id: '4500000001',
-      supplier: 'ABC Manufacturing',
-      material: 'Component A',
-      quantity: 100,
-      unitPrice: 25.50,
-      totalValue: 2550.00,
-      status: 'active',
-      createdDate: '2024-01-15',
-      deliveryDate: '2024-02-15',
-      createdBy: 'John Doe',
-      priority: 'high'
+      poNumber: '4500000001',
+      lineItem: '001',
+      material: 'COMP-001',
+      description: 'Component A-1 for Assembly',
+      plant: 'PLANT-A',
+      storageLocation: 'SL-001',
+      poQuantity: 100,
+      uom: 'PCS',
+      deliveryDate: '2024-03-15',
+      netPrice: 25.50,
+      currency: 'USD',
+      deliveredQuantity: 60,
+      invoicedQuantity: 50,
+      openQuantity: 40,
+      supplier: 'ABC Manufacturing'
     },
     {
-      id: '4500000002',
-      supplier: 'XYZ Industries',
-      material: 'Component B',
-      quantity: 50,
-      unitPrice: 45.75,
-      totalValue: 2287.50,
-      status: 'pending',
-      createdDate: '2024-01-16',
-      deliveryDate: '2024-02-20',
-      createdBy: 'Jane Smith',
-      priority: 'medium'
+      poNumber: '4500000001',
+      lineItem: '002',
+      material: 'COMP-002',
+      description: 'Component A-2 for Assembly',
+      plant: 'PLANT-A',
+      storageLocation: 'SL-002',
+      poQuantity: 75,
+      uom: 'PCS',
+      deliveryDate: '2024-03-20',
+      netPrice: 18.75,
+      currency: 'USD',
+      deliveredQuantity: 45,
+      invoicedQuantity: 40,
+      openQuantity: 30,
+      supplier: 'ABC Manufacturing'
     },
     {
-      id: '4500000003',
-      supplier: 'DEF Corp',
-      material: 'Component C',
-      quantity: 200,
-      unitPrice: 12.25,
-      totalValue: 2450.00,
-      status: 'completed',
-      createdDate: '2024-01-10',
-      deliveryDate: '2024-02-10',
-      createdBy: 'Mike Johnson',
-      priority: 'low'
+      poNumber: '4500000002',
+      lineItem: '001',
+      material: 'COMP-003',
+      description: 'Component B-1 for Secondary Assembly',
+      plant: 'PLANT-B',
+      storageLocation: 'SL-003',
+      poQuantity: 80,
+      uom: 'PCS',
+      deliveryDate: '2024-03-25',
+      netPrice: 32.00,
+      currency: 'USD',
+      deliveredQuantity: 0,
+      invoicedQuantity: 0,
+      openQuantity: 80,
+      supplier: 'XYZ Industries'
+    },
+    {
+      poNumber: '4500000003',
+      lineItem: '001',
+      material: 'COMP-004',
+      description: 'Component B-2 for Secondary Assembly',
+      plant: 'PLANT-B',
+      storageLocation: 'SL-004',
+      poQuantity: 120,
+      uom: 'PCS',
+      deliveryDate: '2024-04-01',
+      netPrice: 28.50,
+      currency: 'USD',
+      deliveredQuantity: 0,
+      invoicedQuantity: 0,
+      openQuantity: 120,
+      supplier: 'XYZ Industries'
     }
   ]
 
-  const getStatusBadge = (status) => {
-    const statusConfig = {
-      draft: { color: 'fiori-badge', icon: Clock, label: 'Draft' },
-      pending: { color: 'fiori-badge-warning', icon: AlertTriangle, label: 'Pending' },
-      active: { color: 'fiori-badge-info', icon: CheckCircle, label: 'Active' },
-      completed: { color: 'fiori-badge-success', icon: CheckCircle, label: 'Completed' },
-      cancelled: { color: 'fiori-badge-error', icon: AlertTriangle, label: 'Cancelled' }
-    }
-    
-    const config = statusConfig[status] || statusConfig.draft
-    const Icon = config.icon
-    
-    return (
-      <span className={`${config.color} flex items-center`}>
-        <Icon className="w-3 h-3 mr-1" />
-        {config.label}
-      </span>
-    )
-  }
-
-  const getPriorityBadge = (priority) => {
-    const priorityConfig = {
-      low: 'fiori-badge-success',
-      medium: 'fiori-badge-warning',
-      high: 'fiori-badge-error'
-    }
-    
-    return (
-      <span className={`${priorityConfig[priority] || priorityConfig.medium} capitalize`}>
-        {priority}
-      </span>
-    )
-  }
-
-  const filteredOrders = purchaseOrders.filter(order => {
-    const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.supplier.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.material.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = selectedStatus === 'all' || order.status === selectedStatus
-    
-    return matchesSearch && matchesStatus
+  const [purchaseOrders, setPurchaseOrders] = useState(purchaseOrderData)
+  const [showPostGRModal, setShowPostGRModal] = useState(false)
+  const [selectedPOItem, setSelectedPOItem] = useState(null)
+  const [postGRForm, setPostGRForm] = useState({
+    quantity: '',
+    notes: '',
+    receiptDate: new Date().toISOString().split('T')[0]
   })
+
+  // New state for Component Consumption modal
+  const [showComponentConsumptionModal, setShowComponentConsumptionModal] = useState(false)
+  const [consumptionForm, setConsumptionForm] = useState({
+    quantity: '',
+    notes: '',
+    consumptionDate: new Date().toISOString().split('T')[0]
+  })
+
+  // Action handlers for Purchase Orders
+  const handleBookComponentConsumption = (poItem) => {
+    setSelectedPOItem(poItem)
+    setShowComponentConsumptionModal(true)
+  }
+
+  const handlePostGR = (poItem) => {
+    setSelectedPOItem(poItem)
+    setShowPostGRModal(true)
+  }
+
+  const handleClosePOItem = (poItem) => {
+    // Remove the PO item from the open list
+    setPurchaseOrders(prev => prev.filter(item => 
+      !(item.poNumber === poItem.poNumber && item.lineItem === poItem.lineItem)
+    ))
+  }
+
+  const handleCreatePO = () => {
+    console.log('Create new PO')
+    // TODO: Implement PO creation
+  }
+
+  const handleEditPO = (poItem) => {
+    console.log('Edit PO:', poItem)
+    // TODO: Implement PO editing
+  }
+
+  const handleViewHistory = (poItem) => {
+    console.log('View History:', poItem)
+    // TODO: Implement history view
+  }
+
+  const handlePostConsumption = () => {
+    console.log('Post Consumption')
+    // TODO: Implement consumption posting
+  }
+
+  // Filter purchase orders based on search term
+  const filteredPurchaseOrders = purchaseOrders.filter(poItem => {
+    const searchLower = searchTerm.toLowerCase()
+    return (
+      poItem.poNumber.toLowerCase().includes(searchLower) ||
+      poItem.material.toLowerCase().includes(searchLower) ||
+      poItem.description.toLowerCase().includes(searchLower) ||
+      poItem.supplier.toLowerCase().includes(searchLower) ||
+      poItem.plant.toLowerCase().includes(searchLower) ||
+      poItem.storageLocation.toLowerCase().includes(searchLower)
+    )
+  })
+
+  // New handlers for modals
+  const handlePostGRSubmit = (e) => {
+    e.preventDefault()
+    
+    if (!selectedPOItem || !postGRForm.quantity) return
+
+    const quantity = parseInt(postGRForm.quantity)
+    
+    // Update the PO delivered quantity
+    setPurchaseOrders(prev => prev.map(item => {
+      if (item.poNumber === selectedPOItem.poNumber && item.lineItem === selectedPOItem.lineItem) {
+        const newDeliveredQuantity = item.deliveredQuantity + quantity
+        const newOpenQuantity = Math.max(0, item.poQuantity - newDeliveredQuantity)
+        return {
+          ...item,
+          deliveredQuantity: newDeliveredQuantity,
+          openQuantity: newOpenQuantity
+        }
+      }
+      return item
+    }))
+
+    // Reset form and close modal
+    setPostGRForm({
+      quantity: '',
+      notes: '',
+      receiptDate: new Date().toISOString().split('T')[0]
+    })
+    setShowPostGRModal(false)
+    setSelectedPOItem(null)
+  }
+
+  const handleComponentConsumptionSubmit = (e) => {
+    e.preventDefault()
+    
+    if (!selectedPOItem || !consumptionForm.quantity) return
+
+    const quantity = parseInt(consumptionForm.quantity)
+    
+    // TODO: Implement SAP movement 543 for subcontracting
+    console.log('Posting SAP movement 543 for component consumption:', {
+      poItem: selectedPOItem,
+      quantity: quantity,
+      date: consumptionForm.consumptionDate,
+      notes: consumptionForm.notes
+    })
+
+    // Reset form and close modal
+    setConsumptionForm({
+      quantity: '',
+      notes: '',
+      consumptionDate: new Date().toISOString().split('T')[0]
+    })
+    setShowComponentConsumptionModal(false)
+    setSelectedPOItem(null)
+  }
+
+  const closePostGRModal = () => {
+    setShowPostGRModal(false)
+    setSelectedPOItem(null)
+    setPostGRForm({
+      quantity: '',
+      notes: '',
+      receiptDate: new Date().toISOString().split('T')[0]
+    })
+  }
+
+  const closeComponentConsumptionModal = () => {
+    setShowComponentConsumptionModal(false)
+    setSelectedPOItem(null)
+    setConsumptionForm({
+      quantity: '',
+      notes: '',
+      consumptionDate: new Date().toISOString().split('T')[0]
+    })
+  }
+
+  // PO grouping and collapse functionality
+  const getGroupedPOs = () => {
+    const grouped = {}
+    filteredPurchaseOrders.forEach(item => {
+      if (!grouped[item.poNumber]) {
+        grouped[item.poNumber] = []
+      }
+      grouped[item.poNumber].push(item)
+    })
+    return grouped
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Purchase Order Management</h1>
-          <p className="text-gray-600 mt-2">Create, manage, and track subcontracting purchase orders</p>
-        </div>
-        <div className="flex space-x-3">
-          <button className="fiori-button-secondary flex items-center space-x-2">
-            <Download className="w-4 h-4" />
-            <span>Export</span>
-          </button>
-          <button 
-            onClick={() => setShowForm(true)}
-            className="fiori-button-primary flex items-center space-x-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Create Purchase Order</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Search and Quick Filters */}
+      {/* Open Purchase Orders Section */}
       <div className="fiori-card">
-        <div className="fiori-card-content">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
+        <div className="fiori-card-header">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <h3 className="text-lg font-semibold text-gray-900">Open Purchase Orders</h3>
+              <span className="text-sm text-gray-500">({filteredPurchaseOrders.length} items)</span>
+            </div>
+            
+            {/* Search Section - Moved to header */}
+            <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search by PO number, supplier, or material..."
+                  placeholder="Search POs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="fiori-input pl-10"
+                  className="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent text-sm"
                 />
               </div>
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
+                >
+                  Clear
+                </button>
+              )}
             </div>
-            <div className="flex space-x-3">
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="fiori-input min-w-[150px]"
+            
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleCreatePO}
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-white bg-[#0070f3] rounded-md hover:bg-[#0057d2] transition-colors"
               >
-                <option value="all">All Status</option>
-                <option value="draft">Draft</option>
-                <option value="pending">Pending</option>
-                <option value="active">Active</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
+                <Plus className="w-4 h-4" />
+                <span>Create PO</span>
+              </button>
+              <button
+                onClick={handlePostConsumption}
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 transition-colors"
+              >
+                <Package className="w-4 h-4" />
+                <span>Post Consumption</span>
+              </button>
+              <button
+                onClick={() => setShowPostGRModal(true)}
+                className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 transition-colors"
+              >
+                <PackageCheck className="w-4 h-4" />
+                <span>Post Goods Receipt</span>
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Purchase Orders Table */}
-      <div className="fiori-card">
-        <div className="fiori-card-header">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Purchase Orders ({filteredOrders.length})
-          </h3>
-        </div>
-        <div className="fiori-card-content p-0">
-          <div className="overflow-x-auto">
-            <table className="fiori-table">
-              <thead className="fiori-table-header">
-                <tr>
-                  <th className="fiori-table-header-cell">PO Number</th>
-                  <th className="fiori-table-header-cell">Supplier</th>
-                  <th className="fiori-table-header-cell">Material</th>
-                  <th className="fiori-table-header-cell">Quantity</th>
-                  <th className="fiori-table-header-cell">Unit Price</th>
-                  <th className="fiori-table-header-cell">Total Value</th>
-                  <th className="fiori-table-header-cell">Status</th>
-                  <th className="fiori-table-header-cell">Priority</th>
-                  <th className="fiori-table-header-cell">Delivery Date</th>
-                  <th className="fiori-table-header-cell">Actions</th>
+        <div className="fiori-card-content">
+          <div className="overflow-x-auto max-h-96 overflow-y-auto">
+            <table className="w-full border-collapse">
+              <colgroup>
+                <col className="w-32" /> {/* Purchase Order */}
+                <col className="w-20" /> {/* Line Item */}
+                <col className="w-28" /> {/* Material */}
+                <col className="w-48" /> {/* Description */}
+                <col className="w-24" /> {/* Plant */}
+                <col className="w-28" /> {/* Storage Location */}
+                <col className="w-24" /> {/* PO Quantity */}
+                <col className="w-16" /> {/* UoM */}
+                <col className="w-28" /> {/* Delivery Date */}
+                <col className="w-24" /> {/* Net Price */}
+                <col className="w-20" /> {/* Currency */}
+                <col className="w-24" /> {/* Delivered Qty */}
+                <col className="w-16" /> {/* UoM */}
+                <col className="w-24" /> {/* Invoiced Qty */}
+                <col className="w-16" /> {/* UoM */}
+                <col className="w-24" /> {/* Open Qty */}
+                <col className="w-16" /> {/* UoM */}
+                <col className="w-24" /> {/* Actions */}
+              </colgroup>
+              <thead className="sticky top-0 bg-gray-100 z-10">
+                <tr className="border-b-2 border-gray-400 border-t-2 border-gray-400">
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Purchase Order</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Line Item</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Material</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Description</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Plant</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Storage Location</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">PO Quantity</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">UoM</th>
+                  <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Delivery Date</th>
+                  <th className="py-3 px-4 text-right text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Net Price</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Currency</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Delivered Qty</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">UoM</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Invoiced Qty</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">UoM</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Open Qty</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">UoM</th>
+                  <th className="py-3 px-4 text-center text-sm font-bold text-gray-900 bg-gray-200">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="fiori-table-cell font-medium text-[#0070f3]">
-                      {order.id}
-                    </td>
-                    <td className="fiori-table-cell">{order.supplier}</td>
-                    <td className="fiori-table-cell">{order.material}</td>
-                    <td className="fiori-table-cell">{order.quantity.toLocaleString()}</td>
-                    <td className="fiori-table-cell">${order.unitPrice.toFixed(2)}</td>
-                    <td className="fiori-table-cell font-medium">${order.totalValue.toFixed(2)}</td>
-                    <td className="fiori-table-cell">{getStatusBadge(order.status)}</td>
-                    <td className="fiori-table-cell">{getPriorityBadge(order.priority)}</td>
-                    <td className="fiori-table-cell">{order.deliveryDate}</td>
-                    <td className="fiori-table-cell">
-                      <div className="flex space-x-2">
-                        <button className="p-1 text-[#0070f3] hover:bg-[#e6f0ff] rounded">
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button className="p-1 text-[#d69e00] hover:bg-[#fff4ce] rounded">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button className="p-1 text-[#d13438] hover:bg-[#fde7e9] rounded">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
+              <tbody>
+                {Object.entries(getGroupedPOs()).flatMap(([poNumber, poItems]) => 
+                  poItems.map((poItem, index) => (
+                    <tr key={`${poItem.poNumber}-${poItem.lineItem}-${index}`} className="bg-white hover:bg-blue-50 transition-colors border-b border-gray-200">
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm font-medium text-gray-900">{poItem.poNumber}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.lineItem}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm font-medium text-gray-900">{poItem.material}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.description}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.plant}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.storageLocation}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-sm text-gray-900">{poItem.poQuantity}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                      </td>
+                      <td className="py-3 px-4 border-r border-gray-200">
+                        <span className="text-sm text-gray-600">{poItem.deliveryDate}</span>
+                      </td>
+                      <td className="py-3 px-4 text-right border-r border-gray-200">
+                        <span className="text-sm text-gray-900">{poItem.netPrice.toFixed(2)}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.currency}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-sm text-gray-900">{poItem.deliveredQuantity}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-sm text-gray-900">{poItem.invoicedQuantity}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className={`text-sm font-medium ${
+                          poItem.openQuantity > 0 ? 'text-orange-600' : 'text-green-600'
+                        }`}>
+                          {poItem.openQuantity}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-center border-r border-gray-200">
+                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleEditPO(poItem)}
+                            className="p-1 text-[#d69e00] hover:text-[#b8860b] hover:bg-[#fff4ce] rounded transition-colors"
+                            title="Edit PO"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleViewHistory(poItem)}
+                            className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors"
+                            title="View History"
+                          >
+                            <Clock className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleClosePOItem(poItem)}
+                            className="p-1 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors"
+                            title="Close PO Item"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      {/* Create Purchase Order Form Modal */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={() => setShowForm(false)}></div>
-            
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-              <div className="bg-white px-6 pt-6 pb-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Create Purchase Order</h3>
+      {/* Post Goods Receipt Modal */}
+      {showPostGRModal && selectedPOItem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl border-4 border-green-500">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-green-50">
+              <h3 className="text-lg font-semibold text-gray-900">Post Goods Receipt</h3>
                   <button
-                    onClick={() => setShowForm(false)}
-                    className="text-gray-400 hover:text-gray-600"
+                onClick={closePostGRModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    <span className="sr-only">Close</span>
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                <X className="w-5 h-5" />
                   </button>
                 </div>
                 
-                <form className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Modal Content */}
+            <div className="p-4">
+              <form onSubmit={handlePostGRSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Material (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Material
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.material}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
+
+                  {/* Description (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.description}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
+
+                  {/* Supplier (Read-only) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Supplier
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.supplier}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
+                  </div>
+
+                  {/* Quantity to Receive */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
-                      <select className="fiori-input">
-                        <option>Select Supplier</option>
-                        <option>ABC Manufacturing</option>
-                        <option>XYZ Industries</option>
-                        <option>DEF Corp</option>
-                      </select>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quantity to Receive *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={postGRForm.quantity}
+                      onChange={(e) => setPostGRForm(prev => ({ ...prev, quantity: e.target.value }))}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                      placeholder="Enter quantity to receive"
+                    />
                     </div>
+
+                  {/* Receipt Date */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Material</label>
-                      <select className="fiori-input">
-                        <option>Select Material</option>
-                        <option>Component A</option>
-                        <option>Component B</option>
-                        <option>Component C</option>
-                      </select>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Receipt Date
+                    </label>
+                    <input
+                      type="date"
+                      value={postGRForm.receiptDate}
+                      onChange={(e) => setPostGRForm(prev => ({ ...prev, receiptDate: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    />
+                  </div>
                     </div>
+
+                {/* Notes - Full Width */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-                      <input type="number" className="fiori-input" placeholder="Enter quantity" />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={postGRForm.notes}
+                    onChange={(e) => setPostGRForm(prev => ({ ...prev, notes: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    placeholder="Enter any notes about this goods receipt..."
+                  />
+                </div>
+              </form>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end space-x-3 p-4 border-t border-gray-200 bg-gray-50">
+              <button
+                type="button"
+                onClick={closePostGRModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3]"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={!postGRForm.quantity}
+                onClick={handlePostGRSubmit}
+                className="px-4 py-2 text-sm font-medium text-white bg-[#0070f3] border border-transparent rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Post Goods Receipt
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Component Consumption Modal */}
+      {showComponentConsumptionModal && selectedPOItem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl border-4 border-purple-500">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-purple-50">
+              <h3 className="text-lg font-semibold text-gray-900">Book Component Consumption</h3>
+              <button
+                onClick={closeComponentConsumptionModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
                     </div>
+
+            {/* Modal Content */}
+            <div className="p-4">
+              <form onSubmit={handleComponentConsumptionSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Material (Read-only) */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Unit Price</label>
-                      <input type="number" step="0.01" className="fiori-input" placeholder="Enter unit price" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Material
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.material}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
                     </div>
+
+                  {/* Description (Read-only) */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Date</label>
-                      <input type="date" className="fiori-input" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.description}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
                     </div>
+
+                  {/* Supplier (Read-only) */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                      <select className="fiori-input">
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                      </select>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Supplier
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedPOItem.supplier}
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    />
                     </div>
+
+                  {/* Quantity to Consume */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quantity to Consume *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={consumptionForm.quantity}
+                      onChange={(e) => setConsumptionForm(prev => ({ ...prev, quantity: e.target.value }))}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                      placeholder="Enter quantity to consume"
+                    />
                   </div>
                   
+                  {/* Consumption Date */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                    <textarea rows={3} className="fiori-input" placeholder="Enter any notes about the purchase order..."></textarea>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Consumption Date
+                    </label>
+                    <input
+                      type="date"
+                      value={consumptionForm.consumptionDate}
+                      onChange={(e) => setConsumptionForm(prev => ({ ...prev, consumptionDate: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                {/* Notes - Full Width */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={consumptionForm.notes}
+                    onChange={(e) => setConsumptionForm(prev => ({ ...prev, notes: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#0070f3] focus:border-transparent"
+                    placeholder="Enter any notes about this component consumption..."
+                  />
                   </div>
                 </form>
               </div>
               
-              <div className="bg-gray-50 px-6 py-3 flex justify-end space-x-3">
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end space-x-3 p-4 border-t border-gray-200 bg-gray-50">
                 <button
-                  onClick={() => setShowForm(false)}
-                  className="fiori-button-secondary"
+                type="button"
+                onClick={closeComponentConsumptionModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3]"
                 >
                   Cancel
                 </button>
-                <button className="fiori-button-primary">
-                  Create Purchase Order
+              <button
+                type="submit"
+                disabled={!consumptionForm.quantity}
+                onClick={handleComponentConsumptionSubmit}
+                className="px-4 py-2 text-sm font-medium text-white bg-[#0070f3] border border-transparent rounded-md hover:bg-[#0057d2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0070f3] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Book Component Consumption
                 </button>
-              </div>
             </div>
           </div>
         </div>
