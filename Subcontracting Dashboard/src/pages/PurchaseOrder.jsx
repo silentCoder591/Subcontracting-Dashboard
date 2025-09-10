@@ -357,59 +357,142 @@ const PurchaseOrder = () => {
                   poItems.map((poItem, index) => (
                     <tr key={`${poItem.poNumber}-${poItem.lineItem}-${index}`} className="bg-white hover:bg-blue-50 transition-colors border-b border-gray-200">
                       <td className="py-3 px-4 border-r border-gray-200">
-                        <span className="text-sm font-medium text-gray-900">{poItem.poNumber}</span>
+                        <span 
+                          className="text-sm font-medium text-gray-900 truncate block max-w-24" 
+                          title={poItem.poNumber}
+                        >
+                          {poItem.poNumber}
+                        </span>
                       </td>
                       <td className="py-3 px-4 border-r border-gray-200">
-                        <span className="text-sm text-gray-600">{poItem.lineItem}</span>
+                        <span 
+                          className="text-sm text-gray-600 truncate block max-w-16" 
+                          title={poItem.lineItem}
+                        >
+                          {poItem.lineItem}
+                        </span>
                       </td>
                       <td className="py-3 px-4 border-r border-gray-200">
-                        <span className="text-sm font-medium text-gray-900">{poItem.material}</span>
+                        <span 
+                          className="text-sm font-medium text-gray-900 truncate block max-w-20" 
+                          title={poItem.material}
+                        >
+                          {poItem.material}
+                        </span>
                       </td>
                       <td className="py-3 px-4 border-r border-gray-200">
-                        <span className="text-sm text-gray-600">{poItem.description}</span>
+                        <span 
+                          className="text-sm text-gray-600 truncate block max-w-xs" 
+                          title={poItem.description}
+                        >
+                          {poItem.description}
+                        </span>
                       </td>
                       <td className="py-3 px-4 border-r border-gray-200">
-                        <span className="text-sm text-gray-600">{poItem.plant}</span>
+                        <span 
+                          className="text-sm text-gray-600 truncate block max-w-16" 
+                          title={poItem.plant}
+                        >
+                          {poItem.plant}
+                        </span>
                       </td>
                       <td className="py-3 px-4 border-r border-gray-200">
-                        <span className="text-sm text-gray-600">{poItem.storageLocation}</span>
+                        <span 
+                          className="text-sm text-gray-600 truncate block max-w-20" 
+                          title={poItem.storageLocation}
+                        >
+                          {poItem.storageLocation}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className="text-sm text-gray-900">{poItem.poQuantity}</span>
+                        <span 
+                          className="text-sm text-gray-900 truncate block max-w-16" 
+                          title={poItem.poQuantity.toString()}
+                        >
+                          {poItem.poQuantity}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                        <span 
+                          className="text-xs text-gray-500 truncate block max-w-12" 
+                          title={poItem.uom}
+                        >
+                          {poItem.uom}
+                        </span>
                       </td>
                       <td className="py-3 px-4 border-r border-gray-200">
-                        <span className="text-sm text-gray-600">{poItem.deliveryDate}</span>
+                        <span 
+                          className="text-sm text-gray-600 truncate block max-w-20" 
+                          title={poItem.deliveryDate}
+                        >
+                          {poItem.deliveryDate}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-right border-r border-gray-200">
-                        <span className="text-sm text-gray-900">{poItem.netPrice.toFixed(2)}</span>
+                        <span 
+                          className="text-sm text-gray-900 truncate block max-w-20" 
+                          title={`$${poItem.netPrice.toFixed(2)}`}
+                        >
+                          ${poItem.netPrice.toFixed(2)}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className="text-xs text-gray-500">{poItem.currency}</span>
+                        <span 
+                          className="text-xs text-gray-500 truncate block max-w-12" 
+                          title={poItem.currency}
+                        >
+                          {poItem.currency}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className="text-sm text-gray-900">{poItem.deliveredQuantity}</span>
+                        <span 
+                          className="text-sm text-gray-900 truncate block max-w-16" 
+                          title={poItem.deliveredQuantity.toString()}
+                        >
+                          {poItem.deliveredQuantity}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                        <span 
+                          className="text-xs text-gray-500 truncate block max-w-12" 
+                          title={poItem.uom}
+                        >
+                          {poItem.uom}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className="text-sm text-gray-900">{poItem.invoicedQuantity}</span>
+                        <span 
+                          className="text-sm text-gray-900 truncate block max-w-16" 
+                          title={poItem.invoicedQuantity.toString()}
+                        >
+                          {poItem.invoicedQuantity}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                        <span 
+                          className="text-xs text-gray-500 truncate block max-w-12" 
+                          title={poItem.uom}
+                        >
+                          {poItem.uom}
+                        </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className={`text-sm font-medium ${
-                          poItem.openQuantity > 0 ? 'text-orange-600' : 'text-green-600'
-                        }`}>
+                        <span 
+                          className={`text-sm font-medium truncate block max-w-16 ${
+                            poItem.openQuantity > 0 ? 'text-orange-600' : 'text-green-600'
+                          }`}
+                          title={poItem.openQuantity.toString()}
+                        >
                           {poItem.openQuantity}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-center border-r border-gray-200">
-                        <span className="text-xs text-gray-500">{poItem.uom}</span>
+                        <span 
+                          className="text-xs text-gray-500 truncate block max-w-12" 
+                          title={poItem.uom}
+                        >
+                          {poItem.uom}
+                        </span>
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center space-x-2">
