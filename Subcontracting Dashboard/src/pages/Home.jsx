@@ -174,35 +174,6 @@ const Home = () => {
 
 
 
-  // Helper function to get merged stock data for a component
-  const getMergedStockData = (componentMaterial, parentId) => {
-    // Use filtered data to ensure we only merge visible items
-    const filteredItems = getFilteredStockItems()
-    const parent = filteredItems.find(item => item.id === parentId)
-    if (!parent) return { totalIssued: 0, uom: '' }
-    
-    const components = parent.children.filter(child => child.material === componentMaterial)
-    const totalIssued = components.reduce((sum, comp) => {
-      const issued = typeof comp.stockIssuedToSubcontractor === 'number' ? comp.stockIssuedToSubcontractor : 0
-      return sum + issued
-    }, 0)
-    
-    return {
-      totalIssued,
-      uom: components[0]?.uom || '',
-      components
-    }
-  }
-
-  // Helper function to check if this is the first occurrence of a component material
-  const isFirstOccurrence = (item, allItems) => {
-    const filteredItems = getFilteredStockItems()
-    const parent = filteredItems.find(parent => parent.id === item.parentId)
-    if (!parent) return true
-    
-    const sameMaterialItems = parent.children.filter(child => child.material === item.material)
-    return sameMaterialItems[0]?.id === item.id
-  }
 
 
   // Filter stock items based on zero stock toggle
@@ -217,16 +188,52 @@ const Home = () => {
     })).filter(assembly => assembly.children.length > 0)
   }
 
+  // Process data to create flattened structure with merged components
+  const getProcessedStockItems = () => {
+    const filtered = getFilteredStockItems()
+    
+    return filtered.map(assembly => {
+      // Group children by material
+      const groupedChildren = {}
+      assembly.children.forEach(child => {
+        if (!groupedChildren[child.material]) {
+          groupedChildren[child.material] = []
+        }
+        groupedChildren[child.material].push(child)
+      })
+
+      // Create flattened structure with merged data
+      const processedChildren = []
+      Object.entries(groupedChildren).forEach(([material, components]) => {
+        const totalIssued = components.reduce((sum, comp) => {
+          const issued = typeof comp.stockIssuedToSubcontractor === 'number' ? comp.stockIssuedToSubcontractor : 0
+          return sum + issued
+        }, 0)
+        
+        // Add all components with merged data
+        components.forEach((comp, index) => {
+          processedChildren.push({
+            ...comp,
+            isMergedFirst: index === 0,
+            mergedTotalIssued: totalIssued,
+            mergedComponents: components
+          })
+        })
+      })
+
+      return {
+        ...assembly,
+        children: processedChildren
+      }
+    })
+  }
+
   const renderStockRow = (item, isChild = false) => {
     const rowClass = isChild 
       ? 'bg-gray-50 border-l-4 border-[#0070f3]' 
       : 'bg-white font-medium'
     
     const indentClass = isChild ? 'pl-8' : 'pl-4'
-    
-    // Get merged stock data for components
-    const mergedData = isChild ? getMergedStockData(item.material, item.parentId) : null
-    const isFirstOccurrenceOfComponent = isChild ? isFirstOccurrence(item, stockItems) : true
 
     return (
       <tr key={item.id} className={`${rowClass} hover:bg-blue-50 transition-colors border-b border-gray-200`}>
@@ -272,15 +279,20 @@ const Home = () => {
         <td className="py-1 px-2 text-center border-r border-gray-200">
           <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
         </td>
-        <td className="py-1 px-2 text-center border-r border-gray-200">
-          {isChild && isFirstOccurrenceOfComponent ? (
+        <td className="py-1 px-2 text-center border-r border-gray-200 relative">
+          {isChild && item.isMergedFirst ? (
             <div 
-              className="inline-block px-2 py-0.5 rounded text-xs bg-green-100 text-green-800 font-medium"
+              className="absolute inset-0 flex items-center justify-center px-2 py-0.5 rounded text-xs bg-green-100 text-green-800 font-medium"
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, item)}
-              title={`Total: ${mergedData.totalIssued} (from ${mergedData.components.length} storage location${mergedData.components.length > 1 ? 's' : ''})`}
+              title={`Total: ${item.mergedTotalIssued} (from ${item.mergedComponents.length} storage location${item.mergedComponents.length > 1 ? 's' : ''})`}
+              style={{
+                height: `${item.mergedComponents.length * 100}%`,
+                zIndex: 10,
+                border: '1px solid #10b981'
+              }}
             >
-              {mergedData.totalIssued}
+              {item.mergedTotalIssued}
             </div>
           ) : isChild ? (
             <div className="text-xs text-gray-300">↳</div>
@@ -362,7 +374,7 @@ const Home = () => {
                 </tr>
               </thead>
               <tbody>
-                {getFilteredStockItems().map(assembly => (
+                {getProcessedStockItems().map(assembly => (
                   <React.Fragment key={assembly.id}>
                     {renderStockRow(assembly)}
                     {assembly.children.map(child => renderStockRow(child, true))}
