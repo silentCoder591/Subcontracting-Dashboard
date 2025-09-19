@@ -204,15 +204,6 @@ const Home = () => {
     return sameMaterialItems[0]?.id === item.id
   }
 
-  // Helper function to get the count of same material items for rowspan
-  const getSameMaterialCount = (item) => {
-    const filteredItems = getFilteredStockItems()
-    const parent = filteredItems.find(parent => parent.id === item.parentId)
-    if (!parent) return 1
-    
-    const sameMaterialItems = parent.children.filter(child => child.material === item.material)
-    return Math.max(1, sameMaterialItems.length)
-  }
 
   // Filter stock items based on zero stock toggle
   const getFilteredStockItems = () => {
@@ -281,32 +272,29 @@ const Home = () => {
         <td className="py-1 px-2 text-center border-r border-gray-200">
           <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
         </td>
-        {isChild && !isFirstOccurrenceOfComponent ? null : (
-          <td 
-            className="py-1 px-2 text-center border-r border-gray-200"
-            rowSpan={isChild && isFirstOccurrenceOfComponent ? getSameMaterialCount(item) : 1}
-          >
-            {isChild && isFirstOccurrenceOfComponent ? (
-              <div 
-                className="inline-block px-2 py-0.5 rounded text-xs bg-green-100 text-green-800 font-medium"
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, item)}
-                title={`Total: ${mergedData.totalIssued} (from ${mergedData.components.length} storage location${mergedData.components.length > 1 ? 's' : ''})`}
-              >
-                {mergedData.totalIssued}
-              </div>
-            ) : (
-              <div 
-                className="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-800"
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, item)}
-                title={`${item.stockIssuedToSubcontractor}`}
-              >
-                {item.stockIssuedToSubcontractor}
-              </div>
-            )}
-          </td>
-        )}
+        <td className="py-1 px-2 text-center border-r border-gray-200">
+          {isChild && isFirstOccurrenceOfComponent ? (
+            <div 
+              className="inline-block px-2 py-0.5 rounded text-xs bg-green-100 text-green-800 font-medium"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, item)}
+              title={`Total: ${mergedData.totalIssued} (from ${mergedData.components.length} storage location${mergedData.components.length > 1 ? 's' : ''})`}
+            >
+              {mergedData.totalIssued}
+            </div>
+          ) : isChild ? (
+            <div className="text-xs text-gray-300">↳</div>
+          ) : (
+            <div 
+              className="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-800"
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, item)}
+              title={`${item.stockIssuedToSubcontractor}`}
+            >
+              {item.stockIssuedToSubcontractor}
+            </div>
+          )}
+        </td>
         <td className="py-1 px-2 text-center">
           <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
         </td>
