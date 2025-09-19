@@ -19,10 +19,10 @@ const PurchaseOrder = () => {
     {
       poNumber: '4500000001',
       lineItem: '001',
-      material: 'MAT-001',
-      description: 'Assembly A - Main Assembly Component',
-      plant: 'PLANT-A',
-      storageLocation: 'SL-001',
+      material: 'Finished Product A',
+      description: 'Main Finished Product Component',
+      plant: '1017',
+      storageLocation: '1001',
       poQuantity: 50,
       uom: 'PCS',
       deliveryDate: '2024-03-15',
@@ -36,10 +36,10 @@ const PurchaseOrder = () => {
     {
       poNumber: '4500000002',
       lineItem: '001',
-      material: 'MAT-002',
-      description: 'Assembly B - Secondary Assembly Component',
-      plant: 'PLANT-B',
-      storageLocation: 'SL-002',
+      material: 'Finished Product A',
+      description: 'Main Finished Product Component',
+      plant: '1017',
+      storageLocation: '1001',
       poQuantity: 30,
       uom: 'PCS',
       deliveryDate: '2024-03-20',
@@ -53,10 +53,10 @@ const PurchaseOrder = () => {
     {
       poNumber: '4500000003',
       lineItem: '001',
-      material: 'MAT-003',
-      description: 'Assembly C - Production Assembly',
-      plant: 'PLANT-A',
-      storageLocation: 'SL-003',
+      material: 'Finished Product A',
+      description: 'Main Finished Product Component',
+      plant: '1017',
+      storageLocation: '1002',
       poQuantity: 25,
       uom: 'PCS',
       deliveryDate: '2024-03-25',
@@ -70,10 +70,10 @@ const PurchaseOrder = () => {
     {
       poNumber: '4500000004',
       lineItem: '001',
-      material: 'MAT-004',
-      description: 'Assembly D - Quality Control Assembly',
-      plant: 'PLANT-C',
-      storageLocation: 'SL-004',
+      material: 'Finished Product A',
+      description: 'Main Finished Product Component',
+      plant: '1017',
+      storageLocation: '1004',
       poQuantity: 40,
       uom: 'PCS',
       deliveryDate: '2024-04-01',
@@ -311,9 +311,10 @@ const PurchaseOrder = () => {
           <div className="overflow-x-auto max-h-96 overflow-y-auto">
             <table className="w-full border-collapse">
               <colgroup>
+                <col className="w-8" /> {/* Checkbox */}
                 <col className="w-32" /> {/* Purchase Order */}
                 <col className="w-20" /> {/* Line Item */}
-                <col className="w-28" /> {/* Material */}
+                <col className="w-40" /> {/* Material */}
                 <col className="w-48" /> {/* Description */}
                 <col className="w-24" /> {/* Plant */}
                 <col className="w-28" /> {/* Storage Location */}
@@ -332,6 +333,9 @@ const PurchaseOrder = () => {
               </colgroup>
               <thead className="sticky top-0 bg-gray-100 z-10">
                 <tr className="border-b-2 border-gray-400 border-t-2 border-gray-400">
+                  <th className="py-3 px-2 text-center text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">
+                    <input type="checkbox" className="w-4 h-4" />
+                  </th>
                   <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Purchase Order</th>
                   <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Line Item</th>
                   <th className="py-3 px-4 text-left text-sm font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200">Material</th>
@@ -356,6 +360,9 @@ const PurchaseOrder = () => {
                 {Object.entries(getGroupedPOs()).flatMap(([poNumber, poItems]) => 
                   poItems.map((poItem, index) => (
                     <tr key={`${poItem.poNumber}-${poItem.lineItem}-${index}`} className="bg-white hover:bg-blue-50 transition-colors border-b border-gray-200">
+                      <td className="py-3 px-2 text-center border-r border-gray-200">
+                        <input type="checkbox" className="w-4 h-4" />
+                      </td>
                       <td className="py-3 px-4 border-r border-gray-200">
                         <span 
                           className="text-sm font-medium text-gray-900 truncate block max-w-24" 

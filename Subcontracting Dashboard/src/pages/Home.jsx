@@ -6,9 +6,10 @@ const Home = () => {
   const stockData = [
     {
       id: 'MAT-001',
-      material: 'Assembly A',
-      description: 'Main Assembly Component',
-      storageLocation: '',
+      material: 'Finished Product A',
+      description: 'Main Finished Product Component',
+      storageLocation: '1001',
+      storageLocationDesc: 'Subcontractor Receiving Area',
       unrestrictedStock: 50,
       uom: '',
       stockIssuedToSubcontractor: "-",
@@ -20,6 +21,7 @@ const Home = () => {
           material: 'Component A-1',
           description: 'Sub-component A-1',
           storageLocation: '2001',
+          storageLocationDesc: 'Nampa, ID',
           unrestrictedStock: 100,
           uom: 'PCS',
           stockIssuedToSubcontractor: 40,
@@ -32,6 +34,7 @@ const Home = () => {
           material: 'Component A-1',
           description: 'Sub-component A-1',
           storageLocation: '2002',
+          storageLocationDesc: 'Indianola, IA',
           unrestrictedStock: 80,
           uom: 'PCS',
           stockIssuedToSubcontractor: 25,
@@ -44,6 +47,7 @@ const Home = () => {
           material: 'Component A-2',
           description: 'Sub-component A-2',
           storageLocation: '2002',
+          storageLocationDesc: 'Indianola, IA',
           unrestrictedStock: 75,
           uom: 'PCS',
           stockIssuedToSubcontractor: 30,
@@ -56,6 +60,7 @@ const Home = () => {
           material: 'Component A-1',
           description: 'Sub-component A-1',
           storageLocation: '2004',
+          storageLocationDesc: 'Helm CA',
           unrestrictedStock: 0,
           uom: 'PCS',
           stockIssuedToSubcontractor: 0,
@@ -68,85 +73,13 @@ const Home = () => {
           material: 'Component A-2',
           description: 'Sub-component A-2',
           storageLocation: '2004',
+          storageLocationDesc: 'Helm CA',
           unrestrictedStock: 0,
           uom: 'PCS',
           stockIssuedToSubcontractor: 0,
           isParent: false,
           parentId: 'MAT-001',
           supplier: 'ABC Manufacturing'
-        }
-      ]
-    },
-    {
-      id: 'MAT-002',
-      material: 'Assembly B',
-      description: 'Secondary Assembly Component',
-      storageLocation: '',
-      unrestrictedStock: 30,
-      uom: '',
-      stockIssuedToSubcontractor: "-",
-      isParent: true,
-      supplier: 'XYZ Industries',
-      children: [
-        {
-          id: 'COMP-003',
-          material: 'Component B-1',
-          description: 'Sub-component B-1',
-          storageLocation: '2001',
-          unrestrictedStock: 60,
-          uom: 'PCS',
-          stockIssuedToSubcontractor: 25,
-          isParent: false,
-          parentId: 'MAT-002',
-          supplier: 'XYZ Industries'
-        },
-        {
-          id: 'COMP-003-2',
-          material: 'Component B-1',
-          description: 'Sub-component B-1',
-          storageLocation: '2002',
-          unrestrictedStock: 50,
-          uom: 'PCS',
-          stockIssuedToSubcontractor: 15,
-          isParent: false,
-          parentId: 'MAT-002',
-          supplier: 'XYZ Industries'
-        },
-        {
-          id: 'COMP-004',
-          material: 'Component B-2',
-          description: 'Sub-component B-2',
-          storageLocation: '2002',
-          unrestrictedStock: 45,
-          uom: 'PCS',
-          stockIssuedToSubcontractor: 20,
-          isParent: false,
-          parentId: 'MAT-002',
-          supplier: 'XYZ Industries'
-        },
-        {
-          id: 'COMP-003-3',
-          material: 'Component B-1',
-          description: 'Sub-component B-1',
-          storageLocation: '2004',
-          unrestrictedStock: 0,
-          uom: 'PCS',
-          stockIssuedToSubcontractor: 0,
-          isParent: false,
-          parentId: 'MAT-002',
-          supplier: 'XYZ Industries'
-        },
-        {
-          id: 'COMP-004-2',
-          material: 'Component B-2',
-          description: 'Sub-component B-2',
-          storageLocation: '2004',
-          unrestrictedStock: 0,
-          uom: 'PCS',
-          stockIssuedToSubcontractor: 0,
-          isParent: false,
-          parentId: 'MAT-002',
-          supplier: 'XYZ Industries'
         }
       ]
     }
@@ -324,6 +257,11 @@ const Home = () => {
             {item.storageLocation}
           </span>
         </td>
+        <td className="py-1 px-2 border-r border-gray-200">
+          <span className={`text-sm ${isChild ? 'text-gray-600' : 'text-gray-900'} truncate block`} title={item.storageLocationDesc}>
+            {item.storageLocationDesc}
+          </span>
+        </td>
         <td className="py-1 px-2 text-center border-r border-gray-200">
           <div 
             className={`inline-block px-2 py-0.5 rounded text-xs ${
@@ -337,35 +275,38 @@ const Home = () => {
             onDrop={(e) => handleDrop(e, item)}
             title={`${item.unrestrictedStock} ${item.uom}`}
           >
-            {item.unrestrictedStock} {item.uom}
+            {item.unrestrictedStock}
           </div>
         </td>
         <td className="py-1 px-2 text-center border-r border-gray-200">
           <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
         </td>
-        <td className="py-1 px-2 text-center border-r border-gray-200">
-          {isChild && isFirstOccurrenceOfComponent ? (
-            <div 
-              className="inline-block px-2 py-0.5 rounded text-xs bg-green-100 text-green-800 font-medium"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, item)}
-              title={`Total: ${mergedData.totalIssued} ${mergedData.uom} (from ${mergedData.components.length} storage location${mergedData.components.length > 1 ? 's' : ''})`}
-            >
-              {mergedData.totalIssued} {mergedData.uom}
-            </div>
-          ) : isChild ? (
-            <div className="text-xs text-gray-300">↳</div>
-          ) : (
-            <div 
-              className="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-800"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, item)}
-              title={`${item.stockIssuedToSubcontractor} ${item.uom}`}
-            >
-              {item.stockIssuedToSubcontractor} {item.uom}
-            </div>
-          )}
-        </td>
+        {isChild && !isFirstOccurrenceOfComponent ? null : (
+          <td 
+            className="py-1 px-2 text-center border-r border-gray-200"
+            rowSpan={isChild && isFirstOccurrenceOfComponent ? getSameMaterialCount(item) : 1}
+          >
+            {isChild && isFirstOccurrenceOfComponent ? (
+              <div 
+                className="inline-block px-2 py-0.5 rounded text-xs bg-green-100 text-green-800 font-medium"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, item)}
+                title={`Total: ${mergedData.totalIssued} (from ${mergedData.components.length} storage location${mergedData.components.length > 1 ? 's' : ''})`}
+              >
+                {mergedData.totalIssued}
+              </div>
+            ) : (
+              <div 
+                className="inline-block px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-800"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, item)}
+                title={`${item.stockIssuedToSubcontractor}`}
+              >
+                {item.stockIssuedToSubcontractor}
+              </div>
+            )}
+          </td>
+        )}
         <td className="py-1 px-2 text-center">
           <span className="text-sm text-gray-600 truncate block" title={item.uom}>{item.uom}</span>
         </td>
@@ -414,6 +355,7 @@ const Home = () => {
                 <col className="w-24" /> {/* Material */}
                 <col className="w-32" /> {/* Description */}
                 <col className="w-20" /> {/* Storage Location */}
+                <col className="w-32" /> {/* Storage Location Description */}
                 <col className="w-24" /> {/* Unrestricted Stock */}
                 <col className="w-12" /> {/* UoM */}
                 <col className="w-28" /> {/* Stock Issued to Subcontractor */}
@@ -424,6 +366,7 @@ const Home = () => {
                   <th className="py-2 px-2 text-left text-xs font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200 leading-tight">Material</th>
                   <th className="py-2 px-2 text-left text-xs font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200 leading-tight">Description</th>
                   <th className="py-2 px-2 text-center text-xs font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200 leading-tight">Storage<br/>Location</th>
+                  <th className="py-2 px-2 text-left text-xs font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200 leading-tight">Storage Location<br/>Description</th>
                   <th className="py-2 px-2 text-center text-xs font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200 leading-tight">Unrestricted<br/>Stock</th>
                   <th className="py-2 px-2 text-center text-xs font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200 leading-tight">UoM</th>
                   <th className="py-2 px-2 text-center text-xs font-bold text-gray-900 border-r-2 border-gray-400 bg-gray-200 leading-tight">Stock Issued<br/>to Subcontractor</th>

@@ -103,14 +103,14 @@ const Layout = ({ children }) => {
               </div>
             </div>
 
-            {/* SKU Filter */}
+            {/* Finished Product Filter */}
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700 min-w-[70px]">SKU:</label>
+              <label className="text-sm font-medium text-gray-700 min-w-[70px]">Finished Product:</label>
               <div className="flex-1 relative">
                 <Package className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Enter SKU"
+                  placeholder="Enter Finished Product"
                   value={filters.sku}
                   onChange={(e) => handleFilterChange('sku', e.target.value)}
                   className="fiori-input pl-8 py-1.5 text-sm"
